@@ -2,6 +2,10 @@
 A simple middleware like ros to communicate between nodes, using zeromq and protobuf.
 This project is modified from orsf's disc_zmq.
 
+CAUTION:
+
+The project currently build and complied in window.
+
 ref:
 
 [ros_with_zeromq](http://po-jen.github.io/design/articles/ros_with_zeromq.html)
