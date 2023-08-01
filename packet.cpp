@@ -19,7 +19,7 @@
 #include <uuid/uuid.h>
 #include <iostream>
 #include <string>
-#include "packet.hh"
+#include "packet.h"
 
 //////////////////////////////////////////////////
 std::string transport::GetGuidStr(const uuid_t &_uuid)

@@ -17,7 +17,7 @@
 
 #include <algorithm>
 #include <string>
-#include "topicsInfo.hh"
+#include "topicsInfo.h"
 
 //////////////////////////////////////////////////
 transport::TopicInfo::TopicInfo()

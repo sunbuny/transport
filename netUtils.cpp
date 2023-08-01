@@ -29,8 +29,8 @@
 #include <iostream>
 #include <string>
 
-#include "config.hh"
-#include "netUtils.hh"
+#include "config.h"
+#include "netUtils.h"
 
 #ifdef HAVE_IFADDRS_H
 # include <ifaddrs.h>

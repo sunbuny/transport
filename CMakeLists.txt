@@ -1,53 +1,40 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-INCLUDE (CheckIncludeFiles)
-
+cmake_minimum_required(VERSION 3.25)
+include (CheckIncludeFiles)
 project (sros)
 
-message (STATUS "${PROJECT_NAME} version ${SDF_VERSION_FULL}")
-
 set(CMAKE_CXX_STANDARD 17)
-
 add_subdirectory(tools)
-add_subdirectory(test)
 
-execute_process(COMMAND pkg-config --modversion protobuf
-  OUTPUT_VARIABLE PROTOBUF_VERSION
-  RESULT_VARIABLE protobuf_modversion_failed)
+check_include_files(ifaddrs.h HAVE_IFADDRS_H)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hh.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 
-CHECK_INCLUDE_FILES(ifaddrs.h HAVE_IFADDRS_H)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hh.in ${CMAKE_CURRENT_SOURCE_DIR}/config.hh)
-
-########################################
-if (PROTOBUF_VERSION LESS 2.3.0)
-  BUILD_ERROR("Incorrect version: Transport requires protobuf version 2.3.0 or greater")
-endif()
 
 ########################################
 # The Google Protobuf library for message generation + serialization
 find_package(Protobuf REQUIRED)
 if (NOT PROTOBUF_FOUND)
-  BUILD_ERROR ("Missing: Google Protobuf (libprotobuf-dev)")
+  BUILD_ERROR ("Missing: Google Protobuf")
 endif()
 if (NOT PROTOBUF_PROTOC_EXECUTABLE)
-  BUILD_ERROR ("Missing: Google Protobuf Compiler (protobuf-compiler)")
+  BUILD_ERROR ("Missing: Google Protobuf Compiler")
 endif()
 if (NOT PROTOBUF_PROTOC_LIBRARY)
-  BUILD_ERROR ("Missing: Google Protobuf Compiler Library (libprotoc-dev)")
+  BUILD_ERROR ("Missing: Google Protobuf Compiler Library")
 endif()
 
 find_package(cppzmq CONFIG REQUIRED)
 
-# Create the transport shared library
+# Create the transport library
 add_library(disczmq
-        discZmq.cc
-        sockets/socket.cc
-        netUtils.cc
-        packet.cc
-        topicsInfo.cc
+        discZmq.cpp
+        sockets/socket.cpp
+        netUtils.cpp
+        packet.cpp
+        topicsInfo.cpp
         uuid/uuid.cpp
 )
 target_include_directories(disczmq PUBLIC ./)
-target_link_libraries(disczmq
+target_link_libraries(disczmq PUBLIC
         protobuf::libprotobuf
         cppzmq
 )
@@ -61,17 +48,12 @@ target_compile_definitions(disczmq
 target_link_libraries(disczmq PUBLIC wsock32 )
 
 # Unit tests
-enable_testing()
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-add_executable(UNIT_packet_TEST packet_TEST.cc)
-add_executable(UNIT_topicsInfo_TEST topicsInfo_TEST.cc)
-add_executable(UNIT_discZmq_TEST discZmq_TEST.cc)
+
+add_executable(UNIT_packet_TEST packet_TEST.cpp)
+add_executable(UNIT_topicsInfo_TEST topicsInfo_TEST.cpp)
+add_executable(UNIT_discZmq_TEST discZmq_TEST.cpp)
 
 target_link_libraries(UNIT_packet_TEST disczmq gtest gtest_main)
 target_link_libraries(UNIT_topicsInfo_TEST disczmq gtest gtest_main)
 target_link_libraries(UNIT_discZmq_TEST disczmq gtest gtest_main)
-
-# Install the library
-set_target_properties(disczmq PROPERTIES SOVERSION ${DISCZMQ_MAJOR_VERSION} VERSION ${DISCZMQ_VERSION_FULL})
-install (TARGETS disczmq DESTINATION ${CMAKE_INSTALL_PREFIX}/lib COMPONENT shlib)

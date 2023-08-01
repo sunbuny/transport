@@ -2,9 +2,13 @@
 #include <time.h>
 
 #include "uuid.h"
-#include "config.h"
 
-const unsigned char hex[17]="0123456789abcdef";
+#define RAND_LENGTH 4
+
+
+
+const unsigned char hex[16]={'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                             'a', 'b', 'c', 'd', 'e', 'f'};
 
 void uuid_generate_random(uuid_t out) {
     int i, j, rnd;

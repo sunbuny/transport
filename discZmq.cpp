@@ -21,10 +21,10 @@
 #include <string>
 #include <vector>
 #include "discZmq.hh"
-#include "netUtils.hh"
-#include "packet.hh"
-#include "sockets/PracticalSocket.h"
-#include "topicsInfo.hh"
+#include "netUtils.h"
+#include "packet.h"
+#include "sockets/socket.h"
+#include "topicsInfo.h"
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 

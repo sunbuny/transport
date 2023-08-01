@@ -21,9 +21,9 @@
 #include <google/protobuf/message.h>
 #include <uuid/uuid.h>
 #include <string>
-#include "packet.hh"
-#include "sockets/socket.hh"
-#include "topicsInfo.hh"
+#include "packet.h"
+#include "sockets/socket.h"
+#include "topicsInfo.h"
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 

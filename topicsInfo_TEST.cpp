@@ -16,7 +16,7 @@
 */
 
 #include <string>
-#include "topicsInfo.hh"
+#include "topicsInfo.h"
 #include "gtest/gtest.h"
 
 bool callbackExecuted = false;
