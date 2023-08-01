@@ -1,19 +1,15 @@
 
 
 # Binaries
-add_executable(publisher publisher.cpp)
-add_executable(subscriber subscriber.cpp)
+
 add_executable(requester requester.cpp)
 add_executable(replier replier.cpp)
-add_executable(test_pub test_pub.cpp)
-add_executable(test_sub test_sub.cpp)
+add_executable(pub pub.cpp)
+add_executable(sub sub.cpp)
 
-target_link_libraries(publisher ${Boost_LIBRARIES} disczmq protobuf boost_program_options)
-target_link_libraries(subscriber ${Boost_LIBRARIES} disczmq protobuf boost_program_options)
-target_link_libraries(requester ${Boost_LIBRARIES} disczmq protobuf boost_program_options)
-target_link_libraries(replier ${Boost_LIBRARIES} disczmq protobuf boost_program_options)
-
-target_link_libraries(test_pub  transport)
-target_link_libraries(test_sub  transport)
+target_link_libraries(pub  transport)
+target_link_libraries(sub  transport)
+target_link_libraries(requester  transport)
+target_link_libraries(replier  transport)
 
 

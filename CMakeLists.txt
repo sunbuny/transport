@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(tools)
 
 check_include_files(ifaddrs.h HAVE_IFADDRS_H)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hh.in src/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in src/config.h)
 
 
 ########################################
