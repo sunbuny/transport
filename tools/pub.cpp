@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     // Read the command line arguments
     std::string master, topic("foo"), data("bar");
     int numMessages(10), rc;
-    bool verbose(true), selfSubscribe(true);
+    bool verbose(true), selfSubscribe(false);
 
     // Transport node
     transport::Node node(master, verbose);
