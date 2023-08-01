@@ -48,12 +48,12 @@ target_compile_definitions(transport
 target_link_libraries(transport PUBLIC wsock32 )
 
 # Unit tests
-
+find_package(Catch2 3 REQUIRED)
 
 add_executable(UNIT_packet_TEST test/packet_TEST.cpp)
 add_executable(UNIT_topicsInfo_TEST test/topicsInfo_TEST.cpp)
-add_executable(UNIT_discZmq_TEST test/discZmq_TEST.cpp)
+add_executable(UNIT_transport_TEST test/transport_TEST.cpp)
 
-target_link_libraries(UNIT_packet_TEST disczmq gtest gtest_main)
-target_link_libraries(UNIT_topicsInfo_TEST disczmq gtest gtest_main)
-target_link_libraries(UNIT_discZmq_TEST disczmq gtest gtest_main)
+target_link_libraries(UNIT_packet_TEST transport Catch2::Catch2WithMain)
+target_link_libraries(UNIT_topicsInfo_TEST transport Catch2::Catch2WithMain)
+target_link_libraries(UNIT_transport_TEST transport Catch2::Catch2WithMain)

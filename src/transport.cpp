@@ -34,7 +34,7 @@ transport::Node::Node(std::string _master, bool _verbose)
   char bindEndPoint[1024];
 
   // Initialize random seed
-  srand(time(nullptr));
+//  srand(time(nullptr));
 
 
   this->master = _master;

@@ -16,13 +16,14 @@
 */
 
 #include <limits.h>
-#include <uuid/uuid.h>
+#include <uuid.h>
 #include <string>
-#include "include/packet.h"
-#include "gtest/gtest.h"
+#include "packet.h"
+#include <catch2/catch_test_macros.hpp>
+
 
 //////////////////////////////////////////////////
-TEST(PacketTest, BasicHeaderAPI)
+TEST_CASE("BasicHeaderAPI", "[PacketTest]")
 {
   std::string topic = "topic_test";
   uuid_t guid;
@@ -32,41 +33,41 @@ TEST(PacketTest, BasicHeaderAPI)
   std::string guidStr = transport::GetGuidStr(guid);
 
   // Check Header getters
-  EXPECT_EQ(header.GetVersion(), TRNSP_VERSION);
+  REQUIRE(header.GetVersion()== TRNSP_VERSION);
   std::string otherGuidStr = transport::GetGuidStr(header.GetGuid());
-  EXPECT_EQ(guidStr, otherGuidStr);
-  EXPECT_EQ(header.GetTopicLength(), topic.size());
-  EXPECT_EQ(header.GetTopic(), topic);
-  EXPECT_EQ(header.GetType(), ADV);
-  EXPECT_EQ(header.GetFlags(), 0);
+  REQUIRE(guidStr== otherGuidStr);
+  REQUIRE(header.GetTopicLength()== topic.size());
+  REQUIRE(header.GetTopic()== topic);
+  REQUIRE(header.GetType()== ADV);
+  REQUIRE(header.GetFlags()== 0);
   int headerLength = sizeof(header.GetVersion()) + sizeof(header.GetGuid()) +
     sizeof(header.GetTopicLength()) + topic.size() + sizeof(header.GetType()) +
     sizeof(header.GetFlags());
-  EXPECT_EQ(header.GetHeaderLength(), headerLength);
+  REQUIRE(header.GetHeaderLength()== headerLength);
 
   // Check Header setters
   header.SetVersion(TRNSP_VERSION + 1);
-  EXPECT_EQ(header.GetVersion(), TRNSP_VERSION + 1);
+  REQUIRE(header.GetVersion()== TRNSP_VERSION + 1);
   uuid_generate(guid);
   header.SetGuid(guid);
   otherGuidStr = transport::GetGuidStr(header.GetGuid());
-  EXPECT_NE(guidStr, otherGuidStr);
+  REQUIRE(guidStr != otherGuidStr);
   topic = "a_new_topic_test";
   header.SetTopic(topic);
-  EXPECT_EQ(header.GetTopic(), topic);
-  EXPECT_EQ(header.GetTopicLength(), topic.size());
+  REQUIRE(header.GetTopic()== topic);
+  REQUIRE(header.GetTopicLength()== topic.size());
   header.SetType(SUB);
-  EXPECT_EQ(header.GetType(), SUB);
+  REQUIRE(header.GetType()== SUB);
   header.SetFlags(1);
-  EXPECT_EQ(header.GetFlags(), 1);
+  REQUIRE(header.GetFlags()== 1);
   headerLength = sizeof(header.GetVersion()) + sizeof(header.GetGuid()) +
     sizeof(header.GetTopicLength()) + topic.size() + sizeof(header.GetType()) +
     sizeof(header.GetFlags());
-  EXPECT_EQ(header.GetHeaderLength(), headerLength);
+  REQUIRE(header.GetHeaderLength()== headerLength);
 }
 
 //////////////////////////////////////////////////
-TEST(PacketTest, HeaderIO)
+TEST_CASE( "HeaderIO", "[PacketTest]")
 {
   std::string guidStr;
   std::string otherGuidStr;
@@ -79,7 +80,7 @@ TEST(PacketTest, HeaderIO)
   transport::Header header(TRNSP_VERSION, guid, topic, ADV_SVC, 2);
   char *buffer = new char[header.GetHeaderLength()];
   size_t bytes = header.Pack(buffer);
-  EXPECT_EQ(bytes, header.GetHeaderLength());
+  REQUIRE(bytes== header.GetHeaderLength());
 
   // Unpack the Header
   transport::Header otherHeader;
@@ -87,19 +88,19 @@ TEST(PacketTest, HeaderIO)
   delete[] buffer;
 
   // Check that after Pack() and Unpack() the Header remains the same
-  EXPECT_EQ(header.GetVersion(), otherHeader.GetVersion());
+  REQUIRE(header.GetVersion()== otherHeader.GetVersion());
   guidStr = transport::GetGuidStr(guid);
   otherGuidStr = transport::GetGuidStr(otherHeader.GetGuid());
-  EXPECT_EQ(guidStr, otherGuidStr);
-  EXPECT_EQ(header.GetTopicLength(), otherHeader.GetTopicLength());
-  EXPECT_EQ(header.GetTopic(), otherHeader.GetTopic());
-  EXPECT_EQ(header.GetType(), otherHeader.GetType());
-  EXPECT_EQ(header.GetFlags(), otherHeader.GetFlags());
-  EXPECT_EQ(header.GetHeaderLength(), otherHeader.GetHeaderLength());
+  REQUIRE(guidStr== otherGuidStr);
+  REQUIRE(header.GetTopicLength()== otherHeader.GetTopicLength());
+  REQUIRE(header.GetTopic()== otherHeader.GetTopic());
+  REQUIRE(header.GetType()== otherHeader.GetType());
+  REQUIRE(header.GetFlags()== otherHeader.GetFlags());
+  REQUIRE(header.GetHeaderLength()== otherHeader.GetHeaderLength());
 }
 
 //////////////////////////////////////////////////
-TEST(PacketTest, BasicAdvMsgAPI)
+TEST_CASE( "BasicAdvMsgAPI", "[PacketTest]")
 {
   std::string topic = "topic_test";
   uuid_t guid;
@@ -113,20 +114,20 @@ TEST(PacketTest, BasicAdvMsgAPI)
 
   // Check AdvMsg getters
   transport::Header header = advMsg.GetHeader();
-  EXPECT_EQ(header.GetVersion(), otherHeader.GetVersion());
+  REQUIRE(header.GetVersion()== otherHeader.GetVersion());
   std::string guidStr = transport::GetGuidStr(header.GetGuid());
-  EXPECT_EQ(guidStr, otherGuidStr);
-  EXPECT_EQ(header.GetTopicLength(), otherHeader.GetTopicLength());
-  EXPECT_EQ(header.GetTopic(), otherHeader.GetTopic());
-  EXPECT_EQ(header.GetType(), otherHeader.GetType());
-  EXPECT_EQ(header.GetFlags(), otherHeader.GetFlags());
-  EXPECT_EQ(header.GetHeaderLength(), otherHeader.GetHeaderLength());
+  REQUIRE(guidStr== otherGuidStr);
+  REQUIRE(header.GetTopicLength()== otherHeader.GetTopicLength());
+  REQUIRE(header.GetTopic()== otherHeader.GetTopic());
+  REQUIRE(header.GetType()== otherHeader.GetType());
+  REQUIRE(header.GetFlags()== otherHeader.GetFlags());
+  REQUIRE(header.GetHeaderLength()== otherHeader.GetHeaderLength());
 
-  EXPECT_EQ(advMsg.GetAddressLength(), address.size());
-  EXPECT_EQ(advMsg.GetAddress(), address);
+  REQUIRE(advMsg.GetAddressLength()== address.size());
+  REQUIRE(advMsg.GetAddress()== address);
   size_t msgLength = advMsg.GetHeader().GetHeaderLength() +
     sizeof(advMsg.GetAddressLength()) + advMsg.GetAddress().size();
-  EXPECT_EQ(advMsg.GetMsgLength(), msgLength);
+  REQUIRE(advMsg.GetMsgLength()== msgLength);
 
   uuid_generate(guid);
   topic = "a_new_topic_test";
@@ -136,25 +137,25 @@ TEST(PacketTest, BasicAdvMsgAPI)
   guidStr = transport::GetGuidStr(guid);
   advMsg.SetHeader(anotherHeader);
   header = advMsg.GetHeader();
-  EXPECT_EQ(header.GetVersion(), TRNSP_VERSION + 1);
+  REQUIRE(header.GetVersion()== TRNSP_VERSION + 1);
   otherGuidStr = transport::GetGuidStr(anotherHeader.GetGuid());
-  EXPECT_EQ(guidStr, otherGuidStr);
-  EXPECT_EQ(header.GetTopicLength(), topic.size());
-  EXPECT_EQ(header.GetTopic(), topic);
-  EXPECT_EQ(header.GetType(), ADV_SVC);
-  EXPECT_EQ(header.GetFlags(), 3);
+  REQUIRE(guidStr== otherGuidStr);
+  REQUIRE(header.GetTopicLength()== topic.size());
+  REQUIRE(header.GetTopic()== topic);
+  REQUIRE(header.GetType()== ADV_SVC);
+  REQUIRE(header.GetFlags()== 3);
   int headerLength = sizeof(header.GetVersion()) + sizeof(header.GetGuid()) +
     sizeof(header.GetTopicLength()) + topic.size() + sizeof(header.GetType()) +
     sizeof(header.GetFlags());
-  EXPECT_EQ(header.GetHeaderLength(), headerLength);
+  REQUIRE(header.GetHeaderLength()== headerLength);
 
   address = "inproc://local";
   advMsg.SetAddress(address);
-  EXPECT_EQ(advMsg.GetAddress(), address);
+  REQUIRE(advMsg.GetAddress()== address);
 }
 
 //////////////////////////////////////////////////
-TEST(PacketTest, AdvMsgIO)
+TEST_CASE( "AdvMsgIO", "[PacketTest]")
 {
   uuid_t guid;
   uuid_generate(guid);
@@ -166,32 +167,27 @@ TEST(PacketTest, AdvMsgIO)
   transport::AdvMsg advMsg(otherHeader, address);
   char *buffer = new char[advMsg.GetMsgLength()];
   size_t bytes = advMsg.Pack(buffer);
-  EXPECT_EQ(bytes, advMsg.GetMsgLength());
+  REQUIRE(bytes== advMsg.GetMsgLength());
 
   // Unpack an AdvMsg
   transport::Header header;
   transport::AdvMsg otherAdvMsg;
   size_t headerBytes = header.Unpack(buffer);
-  EXPECT_EQ(headerBytes, header.GetHeaderLength());
+  REQUIRE(headerBytes== header.GetHeaderLength());
   otherAdvMsg.SetHeader(header);
   char *pBody = buffer + header.GetHeaderLength();
   size_t bodyBytes = otherAdvMsg.UnpackBody(pBody);
   delete[] buffer;
 
   // Check that after Pack() and Unpack() the data does not change
-  EXPECT_EQ(otherAdvMsg.GetAddressLength(), advMsg.GetAddressLength());
-  EXPECT_EQ(otherAdvMsg.GetAddress(), advMsg.GetAddress());
-  EXPECT_EQ(otherAdvMsg.GetMsgLength(), advMsg.GetMsgLength());
-  EXPECT_EQ(otherAdvMsg.GetMsgLength() -
-            otherAdvMsg.GetHeader().GetHeaderLength(), advMsg.GetMsgLength() -
+  REQUIRE(otherAdvMsg.GetAddressLength()== advMsg.GetAddressLength());
+  REQUIRE(otherAdvMsg.GetAddress()== advMsg.GetAddress());
+  REQUIRE(otherAdvMsg.GetMsgLength()== advMsg.GetMsgLength());
+  REQUIRE(otherAdvMsg.GetMsgLength() -
+            otherAdvMsg.GetHeader().GetHeaderLength()== advMsg.GetMsgLength() -
             advMsg.GetHeader().GetHeaderLength());
-  EXPECT_EQ(bodyBytes, otherAdvMsg.GetMsgLength() -
+  REQUIRE(bodyBytes== otherAdvMsg.GetMsgLength() -
             otherAdvMsg.GetHeader().GetHeaderLength());
 }
 
-//////////////////////////////////////////////////
-int main(int argc, char **argv)
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+

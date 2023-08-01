@@ -16,8 +16,8 @@
 */
 
 #include <string>
-#include "include/topicsInfo.h"
-#include "gtest/gtest.h"
+#include "topicsInfo.h"
+#include "catch2/catch_test_macros.hpp"
 
 bool callbackExecuted = false;
 
@@ -41,7 +41,7 @@ int myRepCb(const std::string &p1, const std::string &p2, std::string &p3)
 }
 
 //////////////////////////////////////////////////
-TEST(PacketTest, BasicTopicsInfoAPI)
+TEST_CASE("BasicTopicsInfoAPI", "[PacketTest]")
 {
   transport::TopicsInfo topics;
   std::string topic = "test_topic";
@@ -52,107 +52,101 @@ TEST(PacketTest, BasicTopicsInfoAPI)
   transport::TopicInfo::RepCallback repCb;
 
   // Check getters with an empty TopicsInfo object
-  EXPECT_FALSE(topics.HasTopic(topic));
-  EXPECT_FALSE(topics.GetAdvAddresses(topic, v));
-  EXPECT_FALSE(topics.HasAdvAddress(topic, address));
-  EXPECT_FALSE(topics.Connected(topic));
-  EXPECT_FALSE(topics.Subscribed(topic));
-  EXPECT_FALSE(topics.AdvertisedByMe(topic));
-  EXPECT_FALSE(topics.Requested(topic));
-  EXPECT_FALSE(topics.GetCallback(topic, cb));
-  EXPECT_FALSE(topics.GetReqCallback(topic, reqCb));
-  EXPECT_FALSE(topics.GetRepCallback(topic, repCb));
-  EXPECT_FALSE(topics.PendingReqs(topic));
+  REQUIRE(!topics.HasTopic(topic));
+  REQUIRE(!topics.GetAdvAddresses(topic, v));
+  REQUIRE(!topics.HasAdvAddress(topic, address));
+  REQUIRE(!topics.Connected(topic));
+  REQUIRE(!topics.Subscribed(topic));
+  REQUIRE(!topics.AdvertisedByMe(topic));
+  REQUIRE(!topics.Requested(topic));
+  REQUIRE(!topics.GetCallback(topic, cb));
+  REQUIRE(!topics.GetReqCallback(topic, reqCb));
+  REQUIRE(!topics.GetRepCallback(topic, repCb));
+  REQUIRE(!topics.PendingReqs(topic));
 
   // Check getters after inserting a topic in a TopicsInfo object
   topics.AddAdvAddress(topic, address);
-  EXPECT_TRUE(topics.HasTopic(topic));
-  EXPECT_TRUE(topics.HasAdvAddress(topic, address));
-  EXPECT_TRUE(topics.GetAdvAddresses(topic, v));
-  EXPECT_EQ(v.at(0), address);
-  EXPECT_FALSE(topics.Connected(topic));
-  EXPECT_FALSE(topics.Subscribed(topic));
-  EXPECT_FALSE(topics.AdvertisedByMe(topic));
-  EXPECT_FALSE(topics.Requested(topic));
-  EXPECT_FALSE(topics.GetCallback(topic, cb));
-  EXPECT_FALSE(topics.GetReqCallback(topic, reqCb));
-  EXPECT_FALSE(topics.GetRepCallback(topic, repCb));
-  EXPECT_FALSE(topics.PendingReqs(topic));
+  REQUIRE(topics.HasTopic(topic));
+  REQUIRE(topics.HasAdvAddress(topic, address));
+  REQUIRE(topics.GetAdvAddresses(topic, v));
+  REQUIRE(v.at(0)== address);
+  REQUIRE(!topics.Connected(topic));
+  REQUIRE(!topics.Subscribed(topic));
+  REQUIRE(!topics.AdvertisedByMe(topic));
+  REQUIRE(!topics.Requested(topic));
+  REQUIRE(!topics.GetCallback(topic, cb));
+  REQUIRE(!topics.GetReqCallback(topic, reqCb));
+  REQUIRE(!topics.GetRepCallback(topic, repCb));
+  REQUIRE(!topics.PendingReqs(topic));
 
   // Check that there's only one copy stored of the same address
   topics.AddAdvAddress(topic, address);
-  EXPECT_TRUE(topics.GetAdvAddresses(topic, v));
-  EXPECT_EQ(v.size(), 1);
+  REQUIRE(topics.GetAdvAddresses(topic, v));
+  REQUIRE(v.size()== 1);
 
   // Check SetConnected
   topics.SetConnected(topic, true);
-  EXPECT_TRUE(topics.Connected(topic));
+  REQUIRE(topics.Connected(topic));
 
   // Check SetSubscribed
   topics.SetSubscribed(topic, true);
-  EXPECT_TRUE(topics.Subscribed(topic));
+  REQUIRE(topics.Subscribed(topic));
 
   // Check SetRequested
   topics.SetRequested(topic, true);
-  EXPECT_TRUE(topics.Requested(topic));
+  REQUIRE(topics.Requested(topic));
 
   // Check SetAdvertisedByMe
   topics.SetAdvertisedByMe(topic, true);
-  EXPECT_TRUE(topics.AdvertisedByMe(topic));
+  REQUIRE(topics.AdvertisedByMe(topic));
 
   // Check SetCallback
   topics.SetCallback(topic, myCb);
-  EXPECT_TRUE(topics.GetCallback(topic, cb));
+  REQUIRE(topics.GetCallback(topic, cb));
   callbackExecuted = false;
   cb("topic", "data");
-  EXPECT_TRUE(callbackExecuted);
+  REQUIRE(callbackExecuted);
 
   // Check SetReqCallback
   topics.SetReqCallback(topic, myReqCb);
-  EXPECT_TRUE(topics.GetReqCallback(topic, reqCb));
+  REQUIRE(topics.GetReqCallback(topic, reqCb));
   callbackExecuted = false;
   reqCb("topic", 0, "answer");
-  EXPECT_TRUE(callbackExecuted);
+  REQUIRE(callbackExecuted);
 
   // Check SetRepCallback
   topics.SetRepCallback(topic, myRepCb);
-  EXPECT_TRUE(topics.GetRepCallback(topic, repCb));
+  REQUIRE(topics.GetRepCallback(topic, repCb));
   callbackExecuted = false;
   std::string result;
-  EXPECT_EQ(repCb("topic", "ReqParams", result), 0);
-  EXPECT_TRUE(callbackExecuted);
+  REQUIRE(repCb("topic", "ReqParams", result)== 0);
+  REQUIRE(callbackExecuted);
 
   // Check the address removal
   topics.RemoveAdvAddress(topic, address);
-  EXPECT_FALSE(topics.HasAdvAddress(topic, address));
-  EXPECT_FALSE(topics.GetAdvAddresses(topic, v));
+  REQUIRE(!topics.HasAdvAddress(topic, address));
+  REQUIRE(!topics.GetAdvAddresses(topic, v));
 
   // Check the addition of asynchronous service call requests
   std::string req1 = "paramsReq1";
   std::string req2 = "paramsReq2";
-  EXPECT_FALSE(topics.DelReq(topic, req1));
+  REQUIRE(!topics.DelReq(topic, req1));
   for (auto topicInfo : topics.GetTopicsInfo())
-    EXPECT_FALSE(topics.PendingReqs(topicInfo.first));
+    REQUIRE(!topics.PendingReqs(topicInfo.first));
 
   topics.AddReq(topic, req1);
-  EXPECT_TRUE(topics.PendingReqs(topic));
+  REQUIRE(topics.PendingReqs(topic));
 
   topics.AddReq(topic, req2);
-  EXPECT_TRUE(topics.PendingReqs(topic));
+  REQUIRE(topics.PendingReqs(topic));
 
-  EXPECT_TRUE(topics.DelReq(topic, req2));
-  EXPECT_TRUE(topics.PendingReqs(topic));
+  REQUIRE(topics.DelReq(topic, req2));
+  REQUIRE(topics.PendingReqs(topic));
 
-  EXPECT_TRUE(topics.DelReq(topic, req1));
-  EXPECT_FALSE(topics.PendingReqs(topic));
+  REQUIRE(topics.DelReq(topic, req1));
+  REQUIRE(!topics.PendingReqs(topic));
 
-  EXPECT_FALSE(topics.DelReq(topic, req1));
-  EXPECT_FALSE(topics.PendingReqs(topic));
+  REQUIRE(!topics.DelReq(topic, req1));
+  REQUIRE(!topics.PendingReqs(topic));
 }
 
-//////////////////////////////////////////////////
-int main(int argc, char **argv)
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
