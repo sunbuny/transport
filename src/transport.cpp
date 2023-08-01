@@ -20,7 +20,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "discZmq.h"
+#include "transport.h"
 #include "netUtils.h"
 #include "packet.h"
 #include "socket.h"

@@ -18,7 +18,7 @@
 #include <iostream>
 #include <string>
 
-#include "discZmq.h"
+#include "transport.h"
 
 
 //////////////////////////////////////////////////

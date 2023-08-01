@@ -13,7 +13,7 @@ target_link_libraries(subscriber ${Boost_LIBRARIES} disczmq protobuf boost_progr
 target_link_libraries(requester ${Boost_LIBRARIES} disczmq protobuf boost_program_options)
 target_link_libraries(replier ${Boost_LIBRARIES} disczmq protobuf boost_program_options)
 
-target_link_libraries(test_pub  disczmq)
-target_link_libraries(test_sub  disczmq)
+target_link_libraries(test_pub  transport)
+target_link_libraries(test_sub  transport)
 
 

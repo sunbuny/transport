@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 include (CheckIncludeFiles)
-project (sros)
+project (transport)
 
 set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(tools)
@@ -25,27 +25,27 @@ endif()
 find_package(cppzmq CONFIG REQUIRED)
 
 # Create the transport library
-add_library(disczmq
-        src/discZmq.cpp
+add_library(transport
+        src/transport.cpp
         src/socket.cpp
         src/netUtils.cpp
         src/packet.cpp
         src/topicsInfo.cpp
         src/uuid.cpp
 )
-target_include_directories(disczmq PUBLIC ./include)
-target_link_libraries(disczmq PUBLIC
+target_include_directories(transport PUBLIC ./include)
+target_link_libraries(transport PUBLIC
         protobuf::libprotobuf
         cppzmq
 )
 
-target_compile_definitions(disczmq
+target_compile_definitions(transport
         PUBLIC
         -D_CRT_SECURE_NO_WARNINGS          # remove secure warnings (e.g sprinft_s)
         -DNOMINMAX                         # remove min/max macros
         -D_WINSOCK_DEPRECATED_NO_WARNINGS  # remove winsock deprecated warnings
 )
-target_link_libraries(disczmq PUBLIC wsock32 )
+target_link_libraries(transport PUBLIC wsock32 )
 
 # Unit tests
 
