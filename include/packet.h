@@ -18,7 +18,7 @@
 #ifndef __PACKET_HH_INCLUDED__
 #define __PACKET_HH_INCLUDED__
 
-#include <uuid/uuid.h>
+#include "uuid.h"
 #include <string>
 
 //  This is the version of Gazebo transport we implement

@@ -18,7 +18,7 @@
 #include <limits.h>
 #include <uuid/uuid.h>
 #include <string>
-#include "packet.h"
+#include "include/packet.h"
 #include "gtest/gtest.h"
 
 //////////////////////////////////////////////////

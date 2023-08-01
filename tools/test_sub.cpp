@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 
-#include "../discZmq.hh"
+#include "discZmq.h"
 
 
 //////////////////////////////////////////////////

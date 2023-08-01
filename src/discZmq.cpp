@@ -16,14 +16,14 @@
 */
 
 #include <google/protobuf/message.h>
-#include <uuid/uuid.h>
+#include "uuid.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "discZmq.hh"
+#include "discZmq.h"
 #include "netUtils.h"
 #include "packet.h"
-#include "sockets/socket.h"
+#include "socket.h"
 #include "topicsInfo.h"
 #include "zmq.hpp"
 #include "zmq_addon.hpp"

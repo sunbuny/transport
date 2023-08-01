@@ -19,13 +19,14 @@
 #define __NODE_HH_INCLUDED__
 
 #include <google/protobuf/message.h>
-#include <uuid/uuid.h>
+#include "uuid.h"
 #include <string>
 #include "packet.h"
-#include "sockets/socket.h"
 #include "topicsInfo.h"
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
+
+class UDPSocket;
 
 namespace transport
 {

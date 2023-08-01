@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(tools)
 
 check_include_files(ifaddrs.h HAVE_IFADDRS_H)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hh.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hh.in src/config.h)
 
 
 ########################################
@@ -26,14 +26,14 @@ find_package(cppzmq CONFIG REQUIRED)
 
 # Create the transport library
 add_library(disczmq
-        discZmq.cpp
-        sockets/socket.cpp
-        netUtils.cpp
-        packet.cpp
-        topicsInfo.cpp
-        uuid/uuid.cpp
+        src/discZmq.cpp
+        src/socket.cpp
+        src/netUtils.cpp
+        src/packet.cpp
+        src/topicsInfo.cpp
+        src/uuid.cpp
 )
-target_include_directories(disczmq PUBLIC ./)
+target_include_directories(disczmq PUBLIC ./include)
 target_link_libraries(disczmq PUBLIC
         protobuf::libprotobuf
         cppzmq
@@ -50,9 +50,9 @@ target_link_libraries(disczmq PUBLIC wsock32 )
 # Unit tests
 
 
-add_executable(UNIT_packet_TEST packet_TEST.cpp)
-add_executable(UNIT_topicsInfo_TEST topicsInfo_TEST.cpp)
-add_executable(UNIT_discZmq_TEST discZmq_TEST.cpp)
+add_executable(UNIT_packet_TEST test/packet_TEST.cpp)
+add_executable(UNIT_topicsInfo_TEST test/topicsInfo_TEST.cpp)
+add_executable(UNIT_discZmq_TEST test/discZmq_TEST.cpp)
 
 target_link_libraries(UNIT_packet_TEST disczmq gtest gtest_main)
 target_link_libraries(UNIT_topicsInfo_TEST disczmq gtest gtest_main)

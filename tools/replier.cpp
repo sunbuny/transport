@@ -19,7 +19,7 @@
 #include <iostream>
 #include <string>
 
-#include "../discZmq.hh"
+#include "include/discZmq.hh"
 
 namespace po = boost::program_options;
 

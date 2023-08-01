@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-#include "../discZmq.hh"
+#include "include/discZmq.hh"
 
 namespace po = boost::program_options;
 

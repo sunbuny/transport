@@ -18,7 +18,7 @@
 #include <iostream>
 #include <string>
 
-#include "../discZmq.hh"
+#include "discZmq.h"
 
 
 //////////////////////////////////////////////////
